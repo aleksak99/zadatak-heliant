@@ -8,4 +8,4 @@ spring:
     password: root
 
   liquibase:
-    enabled: false
+    enabled: true

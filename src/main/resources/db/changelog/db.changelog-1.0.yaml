@@ -1,0 +1,242 @@
+databaseChangeLog:
+  - changeSet:
+      id: createTableFormular
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: formular
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: naziv
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vreme_kreiranja
+                  type: timestamp
+              - column:
+                  name: vreme_poslednje_izmene
+                  type: timestamp
+
+  - changeSet:
+      id: createTableFormularPopunjen
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: formular_popunjen
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_formular
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vreme_kreiranja
+                  type: timestamp
+              - column:
+                  name: vreme_poslednje_izmene
+                  type: timestamp
+        - addForeignKeyConstraint:
+            constraintName: fk_formular_formular_popunjen
+            baseColumnNames: id_formular
+            baseTableName: formular_popunjen
+            referencedColumnNames: id
+            referencedTableName: formular
+
+  - changeSet:
+      id: createTablePolje
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: polje
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_formular
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: naziv
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prikazni_redosled
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tip
+                  type: varchar(5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vreme_kreiranja
+                  type: timestamp
+              - column:
+                  name: vreme_poslednje_izmene
+                  type: timestamp
+        - addForeignKeyConstraint:
+            constraintName: fk_formular_polje
+            baseColumnNames: id_formular
+            baseTableName: polje
+            referencedColumnNames: id
+            referencedTableName: formular
+
+  - changeSet:
+      id: createTablePoljePopunjeno
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: polje_popunjeno
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_formular_popunjen
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_polje
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vrednost_tekst
+                  type: varchar(256)
+              - column:
+                  name: vrednost_broj
+                  type: double
+              - column:
+                  name: vreme_kreiranja
+                  type: timestamp
+              - column:
+                  name: vreme_poslednje_izmene
+                  type: timestamp
+        - addForeignKeyConstraint:
+            constraintName: fk_formular_popunjen_polje_popunjeno
+            baseColumnNames: id_formular_popunjen
+            baseTableName: polje_popunjeno
+            referencedColumnNames: id
+            referencedTableName: formular_popunjen
+        - addForeignKeyConstraint:
+            constraintName: fk_polje_polje_popunjeno
+            baseColumnNames: id_polje
+            baseTableName: polje_popunjeno
+            referencedColumnNames: id
+            referencedTableName: polje
+
+  - changeSet:
+      id: createTableKorisnik
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: korisnik
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: korisnicko_ime
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lozinka
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: vreme_kreiranja
+                  type: timestamp
+              - column:
+                  name: vreme_poslednje_izmene
+                  type: timestamp
+
+  - changeSet:
+      id: createTableStatistika
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: statistika
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: datum
+                  type: date
+              - column:
+                  name: broj_popunjenih_formulara
+                  type: int
+
+  - changeSet:
+      id: insertIntoKorisnik
+      author: aleksa.kojadinovic
+      changes:
+        - insert:
+            tableName: korisnik
+            columns:
+              - column:
+                  name: korisnicko_ime
+                  value: 'aleksa.kojadinovic@gmail.com'
+              - column:
+                  name: lozinka
+                  value: $2a$12$Zy0y521E5wUXNbiq76P3j.upPlVPJKrbwx1AyKpGLh4F6PeerSB3C
+              - column:
+                  name: vreme_kreiranja
+                  value: now()
+              - column:
+                  name: vreme_poslednje_izmene
+                  value: now()
+        - insert:
+            tableName: korisnik
+            columns:
+              - column:
+                  name: korisnicko_ime
+                  value: 'nikola.nikolic@gmail.com'
+              - column:
+                  name: lozinka
+                  value: $2a$12$BZQC4i5avrkkyXgI802sNe.cV2box3FhXpvrY9zK5LDXTZ8LU6eZy
+              - column:
+                  name: vreme_kreiranja
+                  value: now()
+              - column:
+                  name: vreme_poslednje_izmene
+                  value: now()
+
