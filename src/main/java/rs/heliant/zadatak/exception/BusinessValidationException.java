@@ -1,6 +1,5 @@
 package rs.heliant.zadatak.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import rs.heliant.zadatak.enums.ErrorCode;

@@ -24,6 +24,12 @@ databaseChangeLog:
               - column:
                   name: vreme_poslednje_izmene
                   type: timestamp
+              - column:
+                  name: id_korisnik_kreirao
+                  type: int
+              - column:
+                  name: id_korisnik_poslednji_azurirao
+                  type: int
 
   - changeSet:
       id: createTableFormularPopunjen
@@ -50,6 +56,12 @@ databaseChangeLog:
               - column:
                   name: vreme_poslednje_izmene
                   type: timestamp
+              - column:
+                  name: id_korisnik_kreirao
+                  type: int
+              - column:
+                  name: id_korisnik_poslednji_azurirao
+                  type: int
         - addForeignKeyConstraint:
             constraintName: fk_formular_formular_popunjen
             baseColumnNames: id_formular
@@ -97,6 +109,12 @@ databaseChangeLog:
               - column:
                   name: vreme_poslednje_izmene
                   type: timestamp
+              - column:
+                  name: id_korisnik_kreirao
+                  type: int
+              - column:
+                  name: id_korisnik_poslednji_azurirao
+                  type: int
         - addForeignKeyConstraint:
             constraintName: fk_formular_polje
             baseColumnNames: id_formular
@@ -140,6 +158,12 @@ databaseChangeLog:
               - column:
                   name: vreme_poslednje_izmene
                   type: timestamp
+              - column:
+                  name: id_korisnik_kreirao
+                  type: int
+              - column:
+                  name: id_korisnik_poslednji_azurirao
+                  type: int
         - addForeignKeyConstraint:
             constraintName: fk_formular_popunjen_polje_popunjeno
             baseColumnNames: id_formular_popunjen
@@ -176,12 +200,6 @@ databaseChangeLog:
                   type: varchar(256)
                   constraints:
                     nullable: false
-              - column:
-                  name: vreme_kreiranja
-                  type: timestamp
-              - column:
-                  name: vreme_poslednje_izmene
-                  type: timestamp
 
   - changeSet:
       id: createTableStatistika
@@ -219,12 +237,6 @@ databaseChangeLog:
               - column:
                   name: lozinka
                   value: $2a$12$Zy0y521E5wUXNbiq76P3j.upPlVPJKrbwx1AyKpGLh4F6PeerSB3C
-              - column:
-                  name: vreme_kreiranja
-                  value: now()
-              - column:
-                  name: vreme_poslednje_izmene
-                  value: now()
         - insert:
             tableName: korisnik
             columns:
@@ -237,12 +249,7 @@ databaseChangeLog:
               - column:
                   name: lozinka
                   value: $2a$12$BZQC4i5avrkkyXgI802sNe.cV2box3FhXpvrY9zK5LDXTZ8LU6eZy
-              - column:
-                  name: vreme_kreiranja
-                  value: now()
-              - column:
-                  name: vreme_poslednje_izmene
-                  value: now()
+
   - changeSet:
       id: createTableRola
       author: aleksa.kojadinovic

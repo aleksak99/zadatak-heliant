@@ -12,7 +12,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Korisnik extends BaseEntity {
+public class Korisnik {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
     @Column(name = "korisnicko_ime")
     private String korisnickoIme;

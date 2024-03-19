@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import rs.heliant.zadatak.configuration.CustomUserDetailsService;
+import rs.heliant.zadatak.exception.BusinessValidationException;
 import rs.heliant.zadatak.service.JwtService;
 
 import java.io.IOException;
@@ -54,7 +55,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (korisnickoIme != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(korisnickoIme);
+            UserDetails userDetails;
+            try {
+                userDetails = userDetailsService.loadUserByUsername(korisnickoIme);
+            } catch (BusinessValidationException e) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return;
+            }
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
