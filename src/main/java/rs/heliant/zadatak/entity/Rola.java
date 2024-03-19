@@ -5,24 +5,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Table(name = "statistika")
+@Table(name = "rola")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Statistika {
+public class Rola {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "datum")
-    private LocalDate datum;
+    @Column(name = "naziv")
+    private String naziv;
 
-    @Column(name = "broj_popunjenih_formulara")
-    private Integer brojPopunjenihFormulara;
-
+    @ManyToMany(mappedBy = "role")
+    List<Korisnik> korisnici;
 }

@@ -23,7 +23,7 @@ public class Polje extends BaseEntity {
     @Column(name = "prikazni_redosled")
     private Integer prikazniRedosled;
 
-    @Column(name = "tip")
+    @Column(name = "tip", columnDefinition = "varchar(5)")
     @Enumerated(EnumType.STRING)
     private TipPolja tip;
 

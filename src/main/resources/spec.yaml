@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: Heliant zadatak - API
+  version: 1.0.0
+tags:
+  - name: formular
+  - name: login
+paths:
+  /api/v1/login:
+    post:
+      tags:
+        - login
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Uspesno ulogovan korisnik
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        '400':
+          description: Bad request
+
+components:
+  schemas:
+    BaseResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    LoginResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: string
+
+    LoginRequest:
+      type: object
+      properties:
+        korisnickoIme:
+          type: string
+        lozinka:
+          type: string

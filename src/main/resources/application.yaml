@@ -6,6 +6,14 @@ spring:
     url: jdbc:mysql://localhost:3306/zadatak_db
     username: root
     password: root
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
 
   liquibase:
     enabled: true
+
+zadatak:
+  jwt:
+    secret-key: 357638792F423F4428472B4B6250655368566D597133743677397A2443264629

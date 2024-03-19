@@ -163,7 +163,6 @@ databaseChangeLog:
               - column:
                   name: id
                   type: int
-                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -194,7 +193,6 @@ databaseChangeLog:
               - column:
                   name: id
                   type: int
-                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -213,6 +211,9 @@ databaseChangeLog:
             tableName: korisnik
             columns:
               - column:
+                  name: id
+                  value: '1'
+              - column:
                   name: korisnicko_ime
                   value: 'aleksa.kojadinovic@gmail.com'
               - column:
@@ -228,6 +229,9 @@ databaseChangeLog:
             tableName: korisnik
             columns:
               - column:
+                  name: id
+                  value: '2'
+              - column:
                   name: korisnicko_ime
                   value: 'nikola.nikolic@gmail.com'
               - column:
@@ -239,4 +243,91 @@ databaseChangeLog:
               - column:
                   name: vreme_poslednje_izmene
                   value: now()
+  - changeSet:
+      id: createTableRola
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: rola
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: naziv
+                  type: varchar(6)
 
+  - changeSet:
+      id: createTableKorisnikRola
+      author: aleksa.kojadinovic
+      changes:
+        - createTable:
+            tableName: korisnik_rola
+            columns:
+              - column:
+                  name: id_korisnik
+                  type: int
+              - column:
+                  name: id_rola
+                  type: int
+        - addForeignKeyConstraint:
+            constraintName: fk_korisnik_rola_korisnik
+            baseColumnNames: id_korisnik
+            baseTableName: korisnik_rola
+            referencedColumnNames: id
+            referencedTableName: korisnik
+        - addForeignKeyConstraint:
+            constraintName: fk_korisnik_rola_rola
+            baseColumnNames: id_rola
+            baseTableName: korisnik_rola
+            referencedColumnNames: id
+            referencedTableName: rola
+
+  - changeSet:
+      id: insertIntoRola
+      author: aleksa.kojadinovic
+      changes:
+        - insert:
+            tableName: rola
+            columns:
+              - column:
+                  name: id
+                  value: '1'
+              - column:
+                  name: naziv
+                  value: 'ADMIN'
+        - insert:
+            tableName: rola
+            columns:
+              - column:
+                  name: id
+                  value: '2'
+              - column:
+                  name: naziv
+                  value: 'RADNIK'
+
+  - changeSet:
+      id: insertIntoKorisnikRola
+      author: aleksa.kojadinovic
+      changes:
+        - insert:
+            tableName: korisnik_rola
+            columns:
+              - column:
+                  name: id_korisnik
+                  value: '1'
+              - column:
+                  name: id_rola
+                  value: '1'
+        - insert:
+            tableName: korisnik_rola
+            columns:
+              - column:
+                  name: id_korisnik
+                  value: '2'
+              - column:
+                  name: id_rola
+                  value: '2'
