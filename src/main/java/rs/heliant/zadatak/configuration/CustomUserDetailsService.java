@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import rs.heliant.zadatak.entity.Korisnik;
-import rs.heliant.zadatak.enums.ErrorCode;
+import rs.heliant.zadatak.enums.ResponseCode;
 import rs.heliant.zadatak.exception.BusinessValidationException;
 import rs.heliant.zadatak.repository.KorisnikRepository;
 
@@ -21,12 +21,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Korisnik korisnik = korisnikRepository.findByKorisnickoIme(username).orElseThrow(() -> {
             log.warn("Korisinik sa korisnickim imenom {} ne poztoji u sistemu.", username);
-            return new BusinessValidationException(ErrorCode.INVALID_USERNAME);
+            return new BusinessValidationException(ResponseCode.INVALID_USERNAME);
         });
         return new CustomUserDetails(
                 korisnik.getKorisnickoIme(),
                 korisnik.getLozinka(),
-                korisnik.getRole().stream().map(rola -> new SimpleGrantedAuthority(rola.getNaziv())).toList()
+                korisnik.getRole().stream().map(rola -> new SimpleGrantedAuthority(rola.getNaziv())).toList(),
+                korisnik.getId()
         );
     }
 }

@@ -13,6 +13,6 @@
         <appender-ref ref="CONSOLE" />
     </root>
 
-    <logger name="rs.heliant.zadatak.filter.JwtAuthFilter" level="debug"/>
+    <logger name="rs.heliant.zadatak" level="debug"/>
 
 </configuration>

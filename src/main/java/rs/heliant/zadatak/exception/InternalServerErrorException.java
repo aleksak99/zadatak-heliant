@@ -6,16 +6,14 @@ import rs.heliant.zadatak.enums.ResponseCode;
 
 @Getter
 @Setter
-public class BusinessValidationException extends RuntimeException implements ErrorCodeProvider {
+public class InternalServerErrorException extends RuntimeException implements ErrorCodeProvider {
 
     private final Integer code;
     private final String message;
 
-    public BusinessValidationException(ResponseCode responseCode) {
+    public InternalServerErrorException(ResponseCode responseCode) {
         super(responseCode.getMessage());
         this.code = responseCode.getCode();
         this.message = responseCode.getMessage();
     }
-
-
 }

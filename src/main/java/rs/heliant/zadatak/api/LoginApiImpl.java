@@ -18,7 +18,7 @@ import rs.heliant.zadatak.service.JwtService;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class LoginApiImpl implements LoginApi {
+public class LoginApiImpl extends BaseApi implements LoginApi {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     @Override
@@ -26,15 +26,8 @@ public class LoginApiImpl implements LoginApi {
         log.info("Login endpoint request: {}", loginRequest);
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getKorisnickoIme(), loginRequest.getLozinka()));
         if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(new LoginResponse().code(1).message("").data(jwtService.generateToken(loginRequest.getKorisnickoIme())));
+            return createSuccessResponse(new LoginResponse().data(jwtService.generateToken(loginRequest.getKorisnickoIme())));
         }
         throw new UsernameNotFoundException("Netacni korisnicki podaci.");
-
-    }
-
-    @GetMapping("/api/v1/get")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> get() {
-        return ResponseEntity.ok("Test");
     }
 }

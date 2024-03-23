@@ -211,6 +211,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false

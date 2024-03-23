@@ -5,13 +5,13 @@ info:
 tags:
   - name: formular
   - name: login
+  - name: polje
 paths:
   /api/v1/login:
     post:
       tags:
         - login
-      summary: Login
-      description: Login
+      description: Endpoint za logovanje korisnika na aplikaciju.
       operationId: login
       requestBody:
         required: true
@@ -30,8 +30,450 @@ paths:
         '400':
           description: Bad request
 
+  /api/v1/formular:
+    get:
+      tags:
+        - formular
+      description: Endpoint za vracanje liste formulara.
+      operationId: vratiSveFormulare
+      parameters:
+        - in: query
+          name: brojStranice
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - in: query
+          name: brojElemenata
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Uspesno vracena lista formulara.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiFormulareResponse'
+        '400':
+          description: Bad request
+
+    post:
+      tags:
+        - formular
+      description: Endpoint za kreiranje formulara.
+      operationId: kreirajFormular
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KreirajAzurirajFormularRequest'
+      responses:
+        '201':
+          description: Uspesno kreiran formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiFormularResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/formular/{id}:
+    get:
+      tags:
+        - formular
+      description: Endpoint za vracanje formulara po ID-u.
+      operationId: vratiFormularPoId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Uspesno vracen formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiFormularResponse'
+        '400':
+          description: Bad request
+
+    put:
+      tags:
+        - formular
+      description: Endpoint za azuriranje formulara.
+      operationId: azurirajFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KreirajAzurirajFormularRequest'
+      responses:
+        '200':
+          description: Uspesno azuriran formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiFormularResponse'
+        '400':
+          description: Bad request
+
+    delete:
+      tags:
+        - formular
+      description: Endpoint za brisanje formulara.
+      operationId: obrisiFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Uspesno obrisan formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/formular/{id}/popunjen:
+    get:
+      tags:
+        - formular
+      description: Endpoint za vracanje liste formulara.
+      operationId: vratiSvePopunjeneFormulare
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: brojStranice
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - in: query
+          name: brojElemenata
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+      responses:
+        '200':
+          description: Uspesno vracena lista popunjenih formulara.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPopunjeneFormulareResponse'
+        '400':
+          description: Bad request
+
+    post:
+      tags:
+        - formular
+      description: Endpoint za kreiranje formulara.
+      operationId: popuniFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PopuniFormularRequest'
+      responses:
+        '201':
+          description: Uspesno popunjen formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPopunjenFormularResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/formular/popunjen/{id}:
+    get:
+      tags:
+        - formular
+      description: Endpoint za dohvatanja popunjenog formulara i njegovih polja.
+      operationId: vratiPopunjeniFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Uspesno vracen popunjeni formular.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPopunjenFormularResponse'
+        '400':
+          description: Bad request
+
+    put:
+      tags:
+        - formular
+      description: Endpoint za azuriranje popunjenog formulara.
+      operationId: azurirajPopunjeniFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PopuniFormularRequest'
+      responses:
+        '200':
+          description: Uspesno azurirano polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPopunjenFormularResponse'
+        '400':
+          description: Bad request
+
+    delete:
+      tags:
+        - formular
+      description: Endpoint za brisanje popunjenog formulara.
+      operationId: obrisiPopunjenFormular
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Uspesno obrisano polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/formular/{formularId}/polje:
+    get:
+      tags:
+        - polje
+      description: Endpoint za dohvatanja liste polja na formularu.
+      operationId: vratiPoljaFormulara
+      parameters:
+        - in: path
+          name: formularId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Uspesno vracena lista polja na formularu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiListuPoljaResponse'
+        '400':
+          description: Bad request
+    post:
+      tags:
+        - polje
+      description: Endpoint za kreiranje polja na formularu.
+      operationId: kreirajPolje
+      parameters:
+        - in: path
+          name: formularId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KreirajAzurirajPoljeRequest'
+      responses:
+        '201':
+          description: Uspesno kreirano polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPoljeResponse'
+        '400':
+          description: Bad request
+
+  /api/v1/formular/polje/{poljeId}:
+    get:
+      tags:
+        - polje
+      description: Endpoint za vracanje polja po ID-u.
+      operationId: vratiPoljePoId
+      parameters:
+        - in: path
+          name: poljeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Uspesno vraceno polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPoljeResponse'
+        '400':
+          description: Bad request
+
+    put:
+      tags:
+        - polje
+      description: Endpoint za azuriranje polja.
+      operationId: azurirajPolje
+      parameters:
+        - in: path
+          name: poljeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KreirajAzurirajPoljeRequest'
+      responses:
+        '200':
+          description: Uspesno azurirano polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VratiPoljeResponse'
+        '400':
+          description: Bad request
+
+    delete:
+      tags:
+        - polje
+      description: Endpoint za brisanje polja.
+      operationId: obrisiPolje
+      parameters:
+        - in: path
+          name: poljeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Uspesno obrisano polje.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        '400':
+          description: Bad request
+
 components:
   schemas:
+
+    ##### DTOS #####
+
+    FormularDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        naziv:
+          type: string
+
+    FormularPoljeDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        naziv:
+          type: string
+        polja:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoljeDTO'
+
+    PoljeDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        naziv:
+          type: string
+        prikazniRedosled:
+          type: integer
+        tip:
+          $ref: '#/components/schemas/Tip'
+      required:
+        - id
+        - naziv
+        - prikazniRedosled
+        - tip
+
+    PopunjenoPoljeDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        tip:
+          $ref: '#/components/schemas/Tip'
+        prikazniRedosled:
+          type: integer
+        naziv:
+          type: string
+        vrednostTekst:
+          type: string
+        vrednostBroj:
+          type: number
+          format: double
+
+    PopunjenFormularDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        popunjenaPolja:
+          type: array
+          items:
+            $ref: '#/components/schemas/PopunjenoPoljeDTO'
+
+    ##### RESPONSES #####
+
     ValidationErrorResponse:
       type: object
       properties:
@@ -49,6 +491,7 @@ components:
           type: integer
         message:
           type: string
+
     LoginResponse:
       allOf:
         - $ref: '#/components/schemas/BaseResponse'
@@ -56,6 +499,62 @@ components:
           properties:
             data:
               type: string
+
+    VratiFormulareResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/FormularDTO'
+
+    VratiFormularResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/FormularDTO'
+
+    VratiPoljeResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/PoljeDTO'
+
+    VratiPopunjeneFormulareResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/PopunjenFormularDTO'
+
+    VratiPopunjenFormularResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/PopunjenFormularDTO'
+
+    VratiListuPoljaResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/PoljeDTO'
+
+    ##### REQUESTS #####
 
     LoginRequest:
       type: object
@@ -67,3 +566,50 @@ components:
       required:
         - korisnickoIme
         - lozinka
+
+    KreirajAzurirajFormularRequest:
+      type: object
+      properties:
+        naziv:
+          type: string
+      required:
+        - naziv
+
+    KreirajAzurirajPoljeRequest:
+      type: object
+      properties:
+        naziv:
+          type: string
+        prikazniRedosled:
+          type: integer
+        tip:
+          $ref: '#/components/schemas/Tip'
+      required:
+        - naziv
+        - prikazniRedosled
+        - tip
+
+    PopuniFormularRequest:
+      type: object
+      properties:
+        polja:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              vrednostTekst:
+                type: string
+              vrednostBroj:
+                type: number
+                format: double
+            required:
+              - id
+
+    ##### ENUMS #####
+    Tip:
+      type: string
+      enum: [TEKST, BROJ]
+
+
