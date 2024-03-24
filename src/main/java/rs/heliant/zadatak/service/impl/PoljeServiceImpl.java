@@ -34,13 +34,19 @@ public class PoljeServiceImpl implements PoljeService {
      * @return Azurirano polje
      */
     @Override
+    @Transactional
     public PoljeDTO azurirajPolje(Integer poljeId, KreirajAzurirajPoljeRequest kreirajAzurirajPoljeRequest) {
         try {
             Polje poljeEntitet = nadjiPolje(poljeId);
+            validirajPrikazniRedosled(poljeId, poljeEntitet.getFormular().getPolja(), kreirajAzurirajPoljeRequest.getPrikazniRedosled());
             formularMapper.azurirajPolje(poljeEntitet, kreirajAzurirajPoljeRequest);
             poljeEntitet = poljeRepository.save(poljeEntitet);
             return formularMapper.poljeUPoljeDTO(poljeEntitet);
-        } catch (Exception e) {
+        }
+        catch (BusinessValidationException e) {
+            throw e;
+        }
+        catch (Exception e) {
             log.warn("Desila se greska", e);
             throw new InternalServerErrorException(ResponseCode.GENERAL_ERROR);
         }
@@ -56,10 +62,15 @@ public class PoljeServiceImpl implements PoljeService {
     public PoljeDTO kreirajPolje(Integer formularId, KreirajAzurirajPoljeRequest kreirajAzurirajPoljeRequest) {
         try {
             Formular formular = formularService.nadjiFormular(formularId);
+            validirajPrikazniRedosled(null, formular.getPolja(), kreirajAzurirajPoljeRequest.getPrikazniRedosled());
             Polje polje = formularMapper.kreirajPolje(kreirajAzurirajPoljeRequest, formular);
             polje = poljeRepository.save(polje);
             return formularMapper.poljeUPoljeDTO(polje);
-        } catch (Exception e) {
+        }
+        catch (BusinessValidationException e) {
+            throw e;
+        }
+        catch (Exception e) {
             log.warn("Desila se greska", e);
             throw new InternalServerErrorException(ResponseCode.GENERAL_ERROR);
         }
@@ -116,6 +127,14 @@ public class PoljeServiceImpl implements PoljeService {
             log.warn("Polje ne postoji na formularu.");
             return new BusinessValidationException(ResponseCode.FORM_DOES_NOT_EXIST);
         });
+    }
+
+    private void validirajPrikazniRedosled(Integer poljeId, List<Polje> polja, Integer prikazniRedosled) {
+        for (Polje polje: polja) {
+            if (polje.getPrikazniRedosled().equals(prikazniRedosled) && !polje.getId().equals(poljeId)) {
+                throw new BusinessValidationException(ResponseCode.ORDINAL_NUMBER_ALREADY_EXISTS);
+            }
+        }
     }
 
 }

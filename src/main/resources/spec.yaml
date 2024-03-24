@@ -145,10 +145,6 @@ paths:
       responses:
         '204':
           description: Uspesno obrisan formular.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BaseResponse'
         '400':
           description: Bad request
 
@@ -278,10 +274,6 @@ paths:
       responses:
         '204':
           description: Uspesno obrisano polje.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BaseResponse'
         '400':
           description: Bad request
 
@@ -396,10 +388,6 @@ paths:
       responses:
         '204':
           description: Uspesno obrisano polje.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BaseResponse'
         '400':
           description: Bad request
 
@@ -561,8 +549,10 @@ components:
       properties:
         korisnickoIme:
           type: string
+          minLength: 1
         lozinka:
           type: string
+          minLength: 1
       required:
         - korisnickoIme
         - lozinka
@@ -572,6 +562,7 @@ components:
       properties:
         naziv:
           type: string
+          minLength: 1
       required:
         - naziv
 
@@ -580,8 +571,10 @@ components:
       properties:
         naziv:
           type: string
+          minLength: 1
         prikazniRedosled:
           type: integer
+          minimum: 1
         tip:
           $ref: '#/components/schemas/Tip'
       required:
@@ -601,9 +594,11 @@ components:
                 type: integer
               vrednostTekst:
                 type: string
+                minLength: 1
               vrednostBroj:
                 type: number
                 format: double
+                minimum: 0
             required:
               - id
 
@@ -611,5 +606,6 @@ components:
     Tip:
       type: string
       enum: [TEKST, BROJ]
+      minLength: 4
 
 

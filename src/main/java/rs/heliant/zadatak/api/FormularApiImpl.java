@@ -51,24 +51,24 @@ public class FormularApiImpl extends BaseApi implements FormularApi {
 
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BaseResponse> obrisiFormular(Integer id) {
+    public ResponseEntity<Void> obrisiFormular(Integer id) {
         log.debug("Brisanje formulara sa id-em {}.", id);
 
         formularService.obrisiFormular(id);
 
         log.debug("Formular sa id-em {} je obrisan", id);
-        return createNoContentResponse(new BaseResponse());
+        return createNoContentResponse();
     }
 
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BaseResponse> obrisiPopunjenFormular(Integer id) {
+    public ResponseEntity<Void> obrisiPopunjenFormular(Integer id) {
         log.debug("Brisanje popunjenog formulara sa id-em {}.", id);
 
         formularService.obrisiPopunjeniFormular(id);
 
         log.debug("Popunjeni formular sa id-em {} je obrisan", id);
-        return createNoContentResponse(new BaseResponse());
+        return createNoContentResponse();
     }
 
     @Override

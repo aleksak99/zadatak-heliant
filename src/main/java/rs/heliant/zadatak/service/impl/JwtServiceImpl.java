@@ -34,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.builder()
                 .setSubject(korisnickoIme)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*5))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60))
                 .signWith(signingKey, SignatureAlgorithm.HS256).compact();
     }
 

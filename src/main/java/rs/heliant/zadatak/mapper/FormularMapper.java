@@ -1,5 +1,6 @@
 package rs.heliant.zadatak.mapper;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -9,6 +10,7 @@ import rs.heliant.zadatak.entity.FormularPopunjen;
 import rs.heliant.zadatak.entity.Polje;
 import rs.heliant.zadatak.entity.PoljePopunjeno;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Mapper
@@ -46,5 +48,17 @@ public abstract class FormularMapper {
 
     public abstract List<PopunjenFormularDTO> kreirajListuPopunjenihFormulara(List<FormularPopunjen> popunjeniFormulari);
 
+    public abstract List<PopunjenoPoljeDTO> mapirajListuPopunjenihPolja(List<PoljePopunjeno> popunjenaPolja);
+
     public abstract void azurirajPoljePopunjeno(@MappingTarget PoljePopunjeno poljePopunjeno, PopuniFormularRequestPoljaInner popunjenoPolje);
+
+    @AfterMapping
+    protected void afterMapping1(@MappingTarget List<PopunjenoPoljeDTO> popunjenaPolja) {
+        popunjenaPolja.sort(Comparator.comparingInt(PopunjenoPoljeDTO::getPrikazniRedosled));
+    }
+
+    @AfterMapping
+    protected void afterMapping2(@MappingTarget List<PoljeDTO> polja) {
+        polja.sort(Comparator.comparingInt(PoljeDTO::getPrikazniRedosled));
+    }
 }

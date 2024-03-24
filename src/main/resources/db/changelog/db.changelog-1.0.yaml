@@ -339,3 +339,15 @@ databaseChangeLog:
               - column:
                   name: id_rola
                   value: '2'
+
+  - changeSet:
+      id: createIndexKorisnickoIme
+      author: aleksa.kojadinovic
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: korisnicko_ime
+            indexName: idx_korisnicko_ime
+            tableName: korisnik
+            unique: true

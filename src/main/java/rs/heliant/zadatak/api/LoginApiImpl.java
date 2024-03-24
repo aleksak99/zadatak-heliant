@@ -6,13 +6,13 @@ import org.openapitools.api.LoginApi;
 import org.openapitools.model.LoginRequest;
 import org.openapitools.model.LoginResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import rs.heliant.zadatak.enums.ResponseCode;
+import rs.heliant.zadatak.exception.BusinessValidationException;
 import rs.heliant.zadatak.service.JwtService;
 
 @RestController
@@ -28,6 +28,6 @@ public class LoginApiImpl extends BaseApi implements LoginApi {
         if (authentication.isAuthenticated()) {
             return createSuccessResponse(new LoginResponse().data(jwtService.generateToken(loginRequest.getKorisnickoIme())));
         }
-        throw new UsernameNotFoundException("Netacni korisnicki podaci.");
+        throw new BusinessValidationException(ResponseCode.LOGIN_FAILED);
     }
 }

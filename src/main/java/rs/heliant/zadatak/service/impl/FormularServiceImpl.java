@@ -2,12 +2,14 @@ package rs.heliant.zadatak.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.model.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.heliant.zadatak.entity.*;
 import rs.heliant.zadatak.enums.ResponseCode;
+import rs.heliant.zadatak.enums.TipPolja;
 import rs.heliant.zadatak.exception.BusinessValidationException;
 import rs.heliant.zadatak.exception.InternalServerErrorException;
 import rs.heliant.zadatak.mapper.FormularMapper;
@@ -21,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -141,11 +144,23 @@ public class FormularServiceImpl implements FormularService {
     public PopunjenFormularDTO popuniFormular(Integer id, PopuniFormularRequest popuniFormularRequest) {
         try {
             Formular formular = nadjiFormular(id);
+            validirajPolja(formular.getPolja(), popuniFormularRequest.getPolja(), false);
             FormularPopunjen formularPopunjen = new FormularPopunjen();
             formularPopunjen.setFormular(formular);
+
+            List<Integer> poljeIds = popuniFormularRequest.getPolja().stream()
+                    .map(PopuniFormularRequestPoljaInner::getId)
+                    .collect(Collectors.toList());
+            List<Polje> polja = poljeRepository.findAllById(poljeIds);
+
             List<PoljePopunjeno> popunjenaPolja = new ArrayList<>();
             for (PopuniFormularRequestPoljaInner popunjenoPoljeDTO: popuniFormularRequest.getPolja()) {
-                Polje poljeEntity = poljeRepository.findById(popunjenoPoljeDTO.getId()).orElse(null);
+
+                Polje poljeEntity = polja.stream()
+                        .filter(polje -> polje.getId().equals(popunjenoPoljeDTO.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new BusinessValidationException(ResponseCode.FIELD_DOES_NOT_EXIST));
+
                 PoljePopunjeno poljePopunjeno = new PoljePopunjeno();
                 poljePopunjeno.setFormularPopunjen(formularPopunjen);
                 poljePopunjeno.setPolje(poljeEntity);
@@ -156,7 +171,11 @@ public class FormularServiceImpl implements FormularService {
             formularPopunjen.setPopunjenaPolja(popunjenaPolja);
             formularPopunjen = formularPopunjenRepository.save(formularPopunjen);
             return formularMapper.formularPopunjenUPopunjenFormularDTO(formularPopunjen);
-        } catch (Exception e) {
+        }
+        catch (BusinessValidationException e) {
+            throw e;
+        }
+        catch (Exception e) {
             log.warn("Desila se greska", e);
             throw new InternalServerErrorException(ResponseCode.GENERAL_ERROR);
         }
@@ -191,13 +210,18 @@ public class FormularServiceImpl implements FormularService {
     public PopunjenFormularDTO azurirajPopunjeniFormular(Integer id, PopuniFormularRequest popuniFormularRequest) {
         try {
             FormularPopunjen formularPopunjen = nadjiFormularPopunjen(id);
+            validirajPolja(formularPopunjen.getFormular().getPolja(), popuniFormularRequest.getPolja(), true);
             for(PopuniFormularRequestPoljaInner popunjenoPolje: popuniFormularRequest.getPolja()) {
                 PoljePopunjeno poljePopunjeno = formularPopunjen.getPopunjenaPolja().stream().filter(p -> p.getId().equals(popunjenoPolje.getId())).findFirst().orElseThrow(() -> new BusinessValidationException(ResponseCode.FILLED_FIELD_DOES_NOT_EXIST));
                 formularMapper.azurirajPoljePopunjeno(poljePopunjeno, popunjenoPolje);
             }
             formularPopunjen = formularPopunjenRepository.save(formularPopunjen);
             return formularMapper.formularPopunjenUPopunjenFormularDTO(formularPopunjen);
-        } catch (Exception e) {
+        }
+        catch (BusinessValidationException e) {
+            throw e;
+        }
+        catch (Exception e) {
             log.warn("Desila se greska", e);
             throw new InternalServerErrorException(ResponseCode.GENERAL_ERROR);
         }
@@ -247,15 +271,27 @@ public class FormularServiceImpl implements FormularService {
         });
     }
 
-    @Override
-    public Formular sacuvajFormular(Formular formular) {
-        return formularRepository.save(formular);
-    }
-
     private FormularPopunjen nadjiFormularPopunjen(Integer id) {
         return formularPopunjenRepository.findById(id).orElseThrow(() -> {
             log.warn("Popunjeni formular ne postoji.");
             return new BusinessValidationException(ResponseCode.FILLED_FORM_DOES_NOT_EXIST);
+        });
+    }
+
+    private void validirajPolja(List<Polje> formularPolja, List<PopuniFormularRequestPoljaInner> polja, boolean azuriranje) {
+        polja.forEach(polje -> {
+            Polje formularPolje;
+            if (azuriranje) {
+                formularPolje = formularPolja.stream().filter(fp -> fp.getPopunjenaPolja().stream().anyMatch(pp -> pp.getId().equals(polje.getId()))).findFirst().orElseThrow(() -> new BusinessValidationException(ResponseCode.FIELD_DOES_NOT_EXIST));
+            } else {
+                formularPolje = formularPolja.stream().filter(fp -> fp.getId().equals(polje.getId())).findFirst().orElseThrow(() -> new BusinessValidationException(ResponseCode.FIELD_DOES_NOT_EXIST));
+            }
+            if (formularPolje.getTip().equals(TipPolja.BROJ) && (polje.getVrednostBroj() == null || StringUtils.isNotBlank(polje.getVrednostTekst()))) {
+                throw new BusinessValidationException(ResponseCode.NUMBER_FIELD_SENT_TEXT, formularPolje.getNaziv());
+            }
+            if (formularPolje.getTip().equals(TipPolja.TEKST) && (polje.getVrednostBroj() != null || StringUtils.isBlank(polje.getVrednostTekst()))) {
+                throw new BusinessValidationException(ResponseCode.TEXT_FIELD_SENT_NUMBER, formularPolje.getNaziv());
+            }
         });
     }
 }

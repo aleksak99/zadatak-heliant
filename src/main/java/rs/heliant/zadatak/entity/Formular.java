@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.openapitools.model.KreirajAzurirajPoljeRequest;
 
 import java.util.List;
 
@@ -18,10 +17,10 @@ public class Formular extends BaseEntity{
     @Column(name = "naziv")
     private String naziv;
 
-    @OneToMany(mappedBy = "formular", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "formular", cascade = CascadeType.REMOVE)
     private List<FormularPopunjen> popunjeniFormulari;
 
-    @OneToMany(mappedBy = "formular", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "formular", cascade = CascadeType.REMOVE)
     private List<Polje> polja;
 
 }

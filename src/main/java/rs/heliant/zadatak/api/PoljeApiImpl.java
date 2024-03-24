@@ -42,13 +42,13 @@ public class PoljeApiImpl extends BaseApi implements PoljeApi {
 
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<BaseResponse> obrisiPolje(Integer poljeId) {
+    public ResponseEntity<Void> obrisiPolje(Integer poljeId) {
         log.debug("Brisanje polja {}.", poljeId);
 
         poljeService.obrisiPolje(poljeId);
 
         log.debug("Obrisano polje: {}", poljeId);
-        return createNoContentResponse(new BaseResponse());
+        return createNoContentResponse();
     }
 
     @Override

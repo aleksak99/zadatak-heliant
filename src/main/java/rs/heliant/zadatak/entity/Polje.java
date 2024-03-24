@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rs.heliant.zadatak.enums.TipPolja;
 
+import java.util.List;
+
 @Entity
 @Table(name = "polje")
 @Getter
@@ -26,5 +28,8 @@ public class Polje extends BaseEntity {
     @Column(name = "tip", columnDefinition = "varchar(5)")
     @Enumerated(EnumType.STRING)
     private TipPolja tip;
+
+    @OneToMany(mappedBy = "polje", cascade = CascadeType.REMOVE)
+    private List<PoljePopunjeno> popunjenaPolja;
 
 }

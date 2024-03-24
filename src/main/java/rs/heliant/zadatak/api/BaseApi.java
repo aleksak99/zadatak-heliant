@@ -1,6 +1,5 @@
 package rs.heliant.zadatak.api;
 
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import rs.heliant.zadatak.enums.ResponseCode;
@@ -19,9 +18,8 @@ public class BaseApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
-    public <T> ResponseEntity<T> createNoContentResponse(T data) {
-        setCodeAndMessage(data, ResponseCode.SUCCESS);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(data);
+    public ResponseEntity<Void> createNoContentResponse() {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private <T> void setCodeAndMessage(T data, ResponseCode responseCode) {

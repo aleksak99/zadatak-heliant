@@ -25,8 +25,6 @@ public interface FormularService {
 
     Formular nadjiFormular(Integer id);
 
-    Formular sacuvajFormular(Formular formular);
-
     PopunjenFormularDTO popuniFormular(Integer id, PopuniFormularRequest request);
 
     List<PopunjenFormularDTO> vratiPopunjeneFormulare(Integer id, Integer brojStranice, Integer brojElemenata);

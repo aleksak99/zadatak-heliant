@@ -17,5 +17,11 @@ public class BusinessValidationException extends RuntimeException implements Err
         this.message = responseCode.getMessage();
     }
 
+    public BusinessValidationException(ResponseCode responseCode, String additionalMessage) {
+        super(responseCode.getMessage());
+        this.code = responseCode.getCode();
+        this.message = String.format(responseCode.getMessage(), additionalMessage);
+    }
+
 
 }
