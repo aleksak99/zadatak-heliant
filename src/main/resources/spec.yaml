@@ -6,6 +6,11 @@ tags:
   - name: formular
   - name: login
   - name: polje
+security:
+  - bearerAuth: []
+servers:
+  - url: http://localhost:9000
+    description: Local server
 paths:
   /api/v1/login:
     post:
@@ -13,6 +18,7 @@ paths:
         - login
       description: Endpoint za logovanje korisnika na aplikaciju.
       operationId: login
+      security: []
       requestBody:
         required: true
         content:
@@ -607,5 +613,11 @@ components:
       type: string
       enum: [TEKST, BROJ]
       minLength: 4
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 
